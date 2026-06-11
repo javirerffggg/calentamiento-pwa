@@ -264,19 +264,17 @@
             if (!day) return;
 
             let content = `
-                <div class="sticky top-0 pt-12 pb-4 bg-gray-50/90 dark:bg-black/90 backdrop-blur-xl z-10 flex items-center mb-6 animate-fade-in">
-                    <button onclick="goHome()" class="flex items-center text-blue-500 -ml-2 px-2 py-1 active:opacity-50 transition-opacity">
-                        <svg class="w-7 h-7 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-                        <span class="font-semibold text-[17px]">Atrás</span>
-                    </button>
-                </div>
+                <!-- Botón flotante Atrás -->
+                <button onclick="goHome()" class="fixed top-6 left-4 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md text-blue-500 p-2.5 rounded-full ios-shadow border border-gray-100 dark:border-gray-800 flex items-center justify-center active:scale-95 transition-transform animate-fade-in">
+                    <svg class="w-6 h-6 -ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
                 
-                <div class="px-2 animate-fade-in">
+                <div class="px-2 pt-16 animate-fade-in">
                     <h1 class="text-3xl font-bold mb-1">${day.title}</h1>
                     ${day.subtitle ? `<p class="text-gray-500 dark:text-gray-400 font-medium mb-8">${day.subtitle}</p>` : '<div class="mb-8"></div>'}
                 </div>
                 
-                <div class="space-y-8 pb-10 animate-fade-in">
+                <div class="space-y-8 pb-28 animate-fade-in">
             `;
 
             let timerIdCounter = 0;
@@ -412,6 +410,33 @@
             `;
             document.body.appendChild(modal);
         }
+
+        // iOS Swipe Back Gesture Logic
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', e => {
+            if (currentView !== 'day') return; // Solo aplicar si estamos dentro de un día
+            
+            // El gesto debe empezar cerca del borde izquierdo de la pantalla (típico de iOS)
+            if (touchStartX > 40) return; 
+
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = Math.abs(touchEndY - touchStartY);
+
+            // Si es un deslizamiento horizontal claro hacia la derecha (> 60px)
+            if (deltaX > 60 && deltaX > deltaY * 1.5) {
+                goHome();
+            }
+        }, { passive: true });
 
         // Register Service Worker for PWA Offline Capability
         if ('serviceWorker' in navigator) {
