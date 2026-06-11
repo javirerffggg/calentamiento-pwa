@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Guía de Calentamiento</title>
+    
+    <!-- PWA iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f9fafb" media="(prefers-color-scheme: light)">
+    <!-- <link rel="apple-touch-icon" href="apple-touch-icon.png"> --><!-- PON AQUÍ TU LOGO (Recomendado: 192x192px o 512x512px) -->
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* iOS Specific Tweaks */
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            .ios-shadow {
+                box-shadow: 0 4px 20px -2px rgba(0,0,0,0.3);
+            }
+        }
+        
+        /* Animations */
+        .animate-fade-in { animation: fadeIn 0.2s ease-out; }
+        .scale-up { animation: scaleUp 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-black text-black dark:text-white font-sans antialiased pb-10 select-none">
+    <div id="app" class="max-w-md mx-auto p-4">
+        <!-- Content injected by JS -->
+    </div>
+
+    <script>
+        // Data Structure Based on Requirements
+        const db = [
+            {
+                id: 1,
+                title: "Día 1: Empuje",
+                subtitle: "Pecho, Hombros y Tríceps",
+                sections: [
+                    {
+                        name: "Movilidad (Sin descanso)",
+                        exercises: [
+                            "Círculos cuello/muñecas 30s",
+                            "Balanceos brazos horiz. 15 reps",
+                            "Círculos hombros (Molinos) 10 ad/10 at",
+                            "Rotaciones Externas 'en L' 15 reps"
+                        ]
+                    },
+                    {
+                        name: "Activación",
+                        exercises: [
+                            "Plancha",
+                            { text: "Descanso", timer: 30 }
+                        ]
+                    },
+                    {
+                        name: "Aproximación (Press de Banca)",
+                        exercises: [
+                            "Serie 1: 15 reps con 30% peso",
+                            { text: "Descanso", timer: 45 },
+                            "Serie 2: 8 reps con 60% peso",
+                            { text: "Descanso", timer: 60 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Día 2: Tirón",
+                subtitle: "Espalda, Hombros post. y Bíceps",
+                sections: [
+                    {
+                        name: "Movilidad (Sin descanso)",
+                        exercises: [
+                            "Rotaciones Tronco brazos relajados 20 giros",
+                            "Círculos Escapulares 12 lentos",
+                            "Círculos muñecas 30s"
+                        ]
+                    },
+                    {
+                        name: "Activación",
+                        exercises: [
+                            "'Superman' alterno + Puente glúteo (2x15 reps)",
+                            { text: "Descanso", timer: 45 }
+                        ]
+                    },
+                    {
+                        name: "Aproximación (Dominadas/Jalón)",
+                        exercises: [
+                            "Serie 1: 15 reps con 30% peso",
+                            { text: "Descanso", timer: 45 },
+                            "Serie 2: 8 reps con 60% peso",
+                            { text: "Descanso", timer: 60 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Día 3: Pierna y Abdominales",
+                subtitle: "",
+                sections: [
+                    {
+                        name: "Temperatura",
+                        exercises: [
+                            "Bici o Elíptica suave (3-5 min)"
+                        ]
+                    },
+                    {
+                        name: "Movilidad (Sin descanso)",
+                        exercises: [
+                            "Balanceos Pierna (pared) 15 front/lat",
+                            "Sentadilla Cossack 10 reps totales",
+                            "Plancha lateral"
+                        ]
+                    },
+                    {
+                        name: "Aproximación (Sentadilla Hack)",
+                        exercises: [
+                            "Serie 1: 15 reps máquina vacía",
+                            { text: "Descanso", timer: 60 },
+                            "Serie 2: 8 reps con 50% peso",
+                            { text: "Descanso", timer: 90 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Día 5: Upper / Torso",
+                subtitle: "",
+                sections: [
+                    {
+                        name: "Movilidad (Sin descanso)",
+                        exercises: [
+                            "Círculos cuello/muñecas 30s",
+                            "Balanceos brazos horiz. y vert. 15 reps c/u",
+                            "Círculos Escapulares 12 lentos",
+                            "Rotaciones Externas 'en L' 15 reps"
+                        ]
+                    },
+                    {
+                        name: "Activación",
+                        exercises: [
+                            "Plancha frontal (30s) + 'Superman' alterno (10 reps/lado)",
+                            { text: "Descanso", timer: 45 }
+                        ]
+                    },
+                    {
+                        name: "Aproximación (Primer ejercicio base)",
+                        exercises: [
+                            "Serie 1: 15 reps con 30% peso",
+                            { text: "Descanso", timer: 45 },
+                            "Serie 2: 8 reps con 60% peso",
+                            { text: "Descanso", timer: 60 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "Día 6: Lower / Piernas",
+                subtitle: "",
+                sections: [
+                    {
+                        name: "Temperatura",
+                        exercises: [
+                            "Bici o Elíptica suave (3-5 min)"
+                        ]
+                    },
+                    {
+                        name: "Movilidad (Sin descanso)",
+                        exercises: [
+                            "Balanceos Pierna 15 front/lat",
+                            "Rotaciones cadera 10 círculos/lado",
+                            "Sentadilla profunda (Pry squat) 30-45s"
+                        ]
+                    },
+                    {
+                        name: "Aproximación (Prensa o Sentadilla)",
+                        exercises: [
+                            "Serie 1: 15 reps muy ligero/vacía",
+                            { text: "Descanso", timer: 60 },
+                            "Serie 2: 8 reps con 50% peso",
+                            { text: "Descanso", timer: 90 }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // State Management
+        let currentView = 'home';
+        let currentDayId = null;
+        let activeTimers = {};
+
+        const appEl = document.getElementById('app');
+
+        // Main Render Function
+        function render() {
+            if (currentView === 'home') {
+                renderHome();
+            } else if (currentView === 'day') {
+                renderDay();
+            }
+        }
+
+        // Render Home Screen
+        function renderHome() {
+            appEl.innerHTML = `
+                <div class="mt-12 mb-8 px-2 animate-fade-in">
+                    <h1 class="text-4xl font-extrabold tracking-tight mb-2">Calentamiento</h1>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Prepara tu cuerpo para el entrenamiento</p>
+                </div>
+                
+                <button onclick="showTempoModal()" class="w-full mb-8 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 p-4 rounded-[20px] flex items-center justify-between ios-shadow active:scale-[0.98] transition-all">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-200 dark:bg-blue-800/50 p-2 rounded-full">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <span class="font-bold text-[15px]">Ver Nota sobre el Tempo</span>
+                    </div>
+                </button>
+
+                <div class="grid gap-4 animate-fade-in">
+                    ${db.map(day => `
+                        <button onclick="openDay(${day.id})" class="bg-white dark:bg-[#1c1c1e] p-5 rounded-[24px] ios-shadow text-left active:scale-[0.97] transition-all border border-gray-100 dark:border-gray-800">
+                            <h2 class="text-xl font-bold">${day.title}</h2>
+                            ${day.subtitle ? `<p class="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">${day.subtitle}</p>` : ''}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Render Routine Screen
+        function renderDay() {
+            const day = db.find(d => d.id === currentDayId);
+            if (!day) return;
+
+            let content = `
+                <div class="sticky top-0 pt-12 pb-4 bg-gray-50/90 dark:bg-black/90 backdrop-blur-xl z-10 flex items-center mb-6 animate-fade-in">
+                    <button onclick="goHome()" class="flex items-center text-blue-500 -ml-2 px-2 py-1 active:opacity-50 transition-opacity">
+                        <svg class="w-7 h-7 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                        <span class="font-semibold text-[17px]">Atrás</span>
+                    </button>
+                </div>
+                
+                <div class="px-2 animate-fade-in">
+                    <h1 class="text-3xl font-bold mb-1">${day.title}</h1>
+                    ${day.subtitle ? `<p class="text-gray-500 dark:text-gray-400 font-medium mb-8">${day.subtitle}</p>` : '<div class="mb-8"></div>'}
+                </div>
+                
+                <div class="space-y-8 pb-10 animate-fade-in">
+            `;
+
+            let timerIdCounter = 0;
+
+            day.sections.forEach(section => {
+                content += `
+                    <section>
+                        <h2 class="text-[13px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 ml-4">${section.name}</h2>
+                        <div class="bg-white dark:bg-[#1c1c1e] rounded-[24px] ios-shadow overflow-hidden border border-gray-100 dark:border-gray-800">
+                `;
+
+                section.exercises.forEach((ex, idx) => {
+                    const isLast = idx === section.exercises.length - 1;
+                    const borderClass = isLast ? '' : 'border-b border-gray-100 dark:border-[#2c2c2e]';
+                    
+                    if (typeof ex === 'string') {
+                        // iOS Style Checkbox Item
+                        content += `
+                            <div class="flex items-center p-4 min-h-[60px] active:bg-gray-50 dark:active:bg-[#2c2c2e] transition-colors ${borderClass}" onclick="toggleCheckbox(this)">
+                                <div class="check-circle w-[26px] h-[26px] rounded-full border-2 border-gray-300 dark:border-gray-600 mr-4 flex items-center justify-center transition-all bg-transparent">
+                                    <svg class="w-3.5 h-3.5 text-white opacity-0 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-[16px] font-medium flex-1 text-gray-900 dark:text-gray-100 transition-colors">${ex}</span>
+                            </div>
+                        `;
+                    } else if (ex.timer) {
+                        // Interactive Timer Button
+                        timerIdCounter++;
+                        const timerId = `timer-${currentDayId}-${timerIdCounter}`;
+                        content += `
+                            <div class="p-3 ${borderClass}">
+                                <button id="${timerId}" onclick="startTimer('${timerId}', ${ex.timer}, this)" class="w-full bg-gray-100 dark:bg-[#2c2c2e] text-gray-800 dark:text-gray-200 font-semibold py-3.5 px-4 rounded-[16px] flex items-center justify-center gap-2 active:scale-[0.98] transition-all border border-transparent">
+                                    <svg class="w-5 h-5 icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="text-[15px]">${ex.text}: ${ex.timer}s</span>
+                                </button>
+                            </div>
+                        `;
+                    }
+                });
+
+                content += `
+                        </div>
+                    </section>
+                `;
+            });
+
+            content += `</div>`;
+            appEl.innerHTML = content;
+        }
+
+        // Navigation
+        function openDay(id) {
+            currentDayId = id;
+            currentView = 'day';
+            render();
+            window.scrollTo(0, 0);
+        }
+
+        function goHome() {
+            currentView = 'home';
+            currentDayId = null;
+            render();
+        }
+
+        // Checkbox Logic
+        function toggleCheckbox(container) {
+            const circle = container.querySelector('.check-circle');
+            const svg = circle.querySelector('svg');
+            const text = container.querySelector('span');
+            
+            circle.classList.toggle('bg-blue-500');
+            circle.classList.toggle('border-blue-500');
+            svg.classList.toggle('opacity-0');
+            svg.classList.toggle('opacity-100');
+            
+            text.classList.toggle('text-gray-400');
+            text.classList.toggle('line-through');
+        }
+
+        // Timer Logic
+        function startTimer(id, seconds, btnEl) {
+            if (activeTimers[id]) return; // Avoid multiple clicks
+            
+            let timeLeft = seconds;
+            activeTimers[id] = true;
+            
+            // Visual change to running state
+            btnEl.classList.remove('bg-gray-100', 'dark:bg-[#2c2c2e]', 'text-gray-800', 'dark:text-gray-200');
+            btnEl.classList.add('bg-orange-100', 'dark:bg-orange-900/30', 'text-orange-600', 'dark:text-orange-400', 'border-orange-200', 'dark:border-orange-800');
+            
+            const textSpan = btnEl.querySelector('span');
+            textSpan.textContent = `Descanso: ${timeLeft}s`;
+            
+            const interval = setInterval(() => {
+                timeLeft--;
+                textSpan.textContent = `Descanso: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    activeTimers[id] = false; // Allow restart
+                    
+                    // Visual change to completed state
+                    btnEl.classList.remove('bg-orange-100', 'dark:bg-orange-900/30', 'text-orange-600', 'dark:text-orange-400', 'border-orange-200', 'dark:border-orange-800');
+                    btnEl.classList.add('bg-green-100', 'dark:bg-green-900/30', 'text-green-700', 'dark:text-green-400');
+                    
+                    textSpan.textContent = `¡Completado!`;
+                    btnEl.querySelector('.icon-svg').outerHTML = `<svg class="w-5 h-5 icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>`;
+                    
+                    // Vibrate on iOS (if supported/allowed)
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                }
+            }, 1000);
+        }
+
+        // Modal Logic
+        function showTempoModal() {
+            const modal = document.createElement('div');
+            modal.className = "fixed inset-0 z-50 flex items-center justify-center p-5 bg-black/60 backdrop-blur-md animate-fade-in";
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-[#1c1c1e] w-full max-w-sm rounded-[32px] p-7 ios-shadow scale-up relative">
+                    <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Tempo</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-8 text-[15px] leading-relaxed">
+                        Velocidad Ej. <span class="font-bold text-blue-500">3:1:1:0</span><br><br>
+                        <span class="flex items-center mb-2"><span class="w-6 font-bold">3s</span> bajada lenta</span>
+                        <span class="flex items-center mb-2"><span class="w-6 font-bold">1s</span> pausa abajo</span>
+                        <span class="flex items-center mb-2"><span class="w-6 font-bold">1s</span> subida explosiva</span>
+                        <span class="flex items-center"><span class="w-6 font-bold">0s</span> arriba</span>
+                    </p>
+                    <button onclick="this.closest('.fixed').remove()" class="w-full bg-blue-500 text-white font-bold text-[17px] py-4 rounded-2xl active:opacity-80 transition-opacity">
+                        Entendido
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Register Service Worker for PWA Offline Capability
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('ServiceWorker registered'))
+                    .catch(err => console.log('ServiceWorker error: ', err));
+            });
+        }
+
+        // Auto-select routine based on the day of the week
+        const today = new Date().getDay(); // 0: Sunday, 1: Monday, ...
+        const dayMap = {
+            1: 1, // Lunes -> Empuje
+            2: 2, // Martes -> Tirón
+            3: 3, // Miércoles -> Piernas
+            5: 5, // Viernes -> Upper
+            6: 6  // Sábado -> Lower
+        };
+
+        if (dayMap[today]) {
+            currentDayId = dayMap[today];
+            currentView = 'day';
+        }
+
+        // Initial Render
+        render();
+    </script>
+</body>
+</html>
